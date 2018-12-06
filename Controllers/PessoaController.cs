@@ -6,7 +6,7 @@ using System.Linq;
 namespace ApiMySql.Controller
 {
     [ApiController]
-    [Route("/api/[controller]")]
+    [Route("api/[controller]")]
     public class PessoaController : ControllerBase
     {
         private readonly IPessoaRepository _pessoaRepository;

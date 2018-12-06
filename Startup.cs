@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using ApiMySql.Repository;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -29,6 +30,12 @@ namespace ApiMySql
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
+            services.Configure<ForwardedHeadersOptions>(options =>
+               {
+                   options.ForwardedHeaders =
+                       ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+               });
+
             /*
             Adicionando o Swagger na aplicação com o título My API e versão V1
              */
@@ -43,8 +50,9 @@ namespace ApiMySql
             Assim, qualquer classe que referenciar esta interface em seu contrutor, ver PessoaController, receberá
             uma instância de PessoaRepository onde a connection string é obtida do arquivo de configurações appsettings.json
              */
-            services.AddScoped<IPessoaRepository>(factory => {
-                    return new PessoaRepository(Configuration.GetConnectionString("MySqlDbConnection"));
+            services.AddScoped<IPessoaRepository>(factory =>
+            {
+                return new PessoaRepository(Configuration.GetConnectionString("MySqlDbConnection"));
             });
         }
 
@@ -65,7 +73,7 @@ namespace ApiMySql
 
             app.UseSwaggerUI(c =>
             {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Minha API .Net Core e VS Code");
+                c.SwaggerEndpoint("v1/swagger.json", "Minha API .Net Core e VS Code");
             });
 
             app.UseMvc();

@@ -1,0 +1,40 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: workshop-kubernetes-mysql
+  namespace: desenvolvimento
+spec:
+  selector:
+    matchLabels:
+      app: workshop-kubernetes-mysql
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: workshop-kubernetes-mysql
+    spec:
+      containers:
+        - name: workshop-kubernetes-mysql
+          image: daniloar/workshop-kubernetes-mysql
+          imagePullPolicy: Always
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              value: "p@ssw0rd"
+            - name: MYSQL_DATABASE
+              value: "MyFirstAPI"
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: workshop-kubernetes-mysql
+  namespace: desenvolvimento
+  labels:
+    app: workshop-kubernetes-mysql
+spec:
+  ports:
+    - port: 3306
+      targetPort: 3306
+      protocol: TCP
+      name: http
+  selector:
+    app: workshop-kubernetes-mysql
